@@ -1,4 +1,4 @@
 target/
 /Cargo.lock
-mysql/db_data
+/docker/mysql/db_data/
 *~

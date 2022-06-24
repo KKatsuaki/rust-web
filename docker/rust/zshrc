@@ -1,0 +1,75 @@
+#
+# Example .zshrc file for zsh 4.0
+#
+# .zshrc is sourced in interactive shells.  It
+# should contain commands to set up aliases, functions,
+# options, key bindings, etc.
+#
+
+# Use hard limits, except for a smaller stack and no core dumps
+
+# Set up aliases
+alias mv='nocorrect mv -i'       # no spelling correction on mv
+alias cp='nocorrect cp -i'       # no spelling correction on cp
+alias rm='nocorrect rm'       # no spelling correction on rm
+alias p='ps'
+alias mkdir='nocorrect mkdir' # no spelling correction on mkdir
+alias j=jobs
+alias pu=pushd
+alias po=popd
+alias d='dirs -v'
+alias h=history
+alias ls='ls -F --color=auto'
+alias l='ls -lh'
+alias la='ls -a'
+alias ll='l -Ah'
+alias x=exit
+alias show-tmp="find $HOME -name \*~ "
+
+# List only directories and symbolic
+# links that point to directories
+alias lsd='ls -ld *(-/DN)'
+
+# List only file beginning with "."
+alias lsa='ls -ld .*'
+
+# automatically remove duplicates from these arrays
+typeset -U path cdpath fpath manpath
+
+# Global aliases -- These do not have to be
+# at the beginning of the command line.
+alias -g M='|more'
+alias -g H='|head'
+alias -g T='|tail'
+
+manpath=(/opt/share/man /usr/share/man)
+export MANPATH
+
+# Set prompts
+if [ $TERM = screen ]; then 
+  promptname=$(print "\ek%m\e\\")%(!.%F{red}.%F{green})$USERNAME%f
+else
+  promptname=%(!.%F{red}.%F{green})$USERNAME%f
+fi
+PROMPT="%(?."".%F{red}✓ %f)%B$promptname%b@%F{5}%m%f %F{cyan}%~%f %# "
+
+# Some environment variables
+export HELPDIR=/usr/local/lib/zsh/help  # directory for run-help function to find docs
+setopt   notify globdots correct pushdtohome cdablevars autolist
+setopt   correctall autocd recexact longlistjobs
+setopt   autoresume histignoredups pushdsilent noclobber
+setopt   autopushd pushdminus extendedglob rcquotes mailwarning
+setopt   ignoreeof
+unsetopt bgnice autoparamslash
+
+bindkey -e                 # emacs key bindings
+bindkey ' ' magic-space    # also do history expansion on space
+bindkey '^I' complete-word # complete on tab, leave expansion to _expand
+bindkey '^P' up-line-or-search
+bindkey '^N' down-line-or-search
+bindkey '^W' backward-kill-word
+
+function rm-tmp() {                  
+    for f in `find $1 -name \*~`     
+    do rm $f; echo $f "removed"; done
+}                                    

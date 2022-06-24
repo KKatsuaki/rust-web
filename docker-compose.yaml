@@ -6,13 +6,12 @@ services:
     volumes:
       - ./docker/mysql/db_data:/var/lib/mysql
       - ./docker/mysql/config.cnf:/etc/mysql/my.cnf
-      - ./docker/mysql/init:/docker-entrypoint-initdb.d
     environment:
       - MYSQL_DATABASE=${DB_NAME:-test_db}
       - MYSQL_USER=${DB_USER:-user}
       - MYSQL_PASSWORD=${DB_PASS:-secret}
       - MYSQL_ROOT_PASSWORD=${DB_PASS:-toor}
-      - TZ=${$TZ:-UTC}
+      - TZ=${TZ:-UTC}
     restart: unless-stopped
     ports:    
       - "3306:3306"
@@ -20,7 +19,7 @@ services:
   rocket:
     build:
       context: .
-      dockerfile: ./docekr/rust/Dockerfile
+      dockerfile: ./docker/rust/Dockerfile
     tty: true
     volumes:
       - ./:/app
