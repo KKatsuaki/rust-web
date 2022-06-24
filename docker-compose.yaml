@@ -1,0 +1,38 @@
+version: "3"
+
+services:
+  mysql:
+    image: mysql:8-oracle
+    volumes:
+      - ./docker/mysql/db_data:/var/lib/mysql
+      - ./docker/mysql/config.cnf:/etc/mysql/my.cnf
+      - ./docker/mysql/init:/docker-entrypoint-initdb.d
+    environment:
+      - MYSQL_DATABASE=${DB_NAME:-test_db}
+      - MYSQL_USER=${DB_USER:-user}
+      - MYSQL_PASSWORD=${DB_PASS:-secret}
+      - MYSQL_ROOT_PASSWORD=${DB_PASS:-toor}
+      - TZ=${$TZ:-UTC}
+    restart: unless-stopped
+    ports:    
+      - "3306:3306"
+    
+  rocket:
+    build:
+      context: .
+      dockerfile: ./docekr/rust/Dockerfile
+    tty: true
+    volumes:
+      - ./:/app
+    working_dir: /app
+    ports:
+      - "80:80"
+    depends_on:
+      - mysql
+    environment:
+      - DB_HOST=mysql
+      - DB_USER=${DB_USER:-user}
+      - DB_NAME=${DB_NAME:-test_db}
+      - DB_PASSWORD=${DB_PASS:-secret}
+      - ROCKET_ADDRESS=0.0.0.0
+      - ROCKET_PORT=80
